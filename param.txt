@@ -1,0 +1,24 @@
+DIMENSION 4
+
+#   "lora_rank": {"_type":"choice", "_value": [4, 8, 16, 32, 64, 128]},
+#    "lora_dropout": {"_type":"choice", "_value": [0, 0.0001,  0.001, 0.01, 0.1, 1]},
+#    "lora_alpha": {"_type":"choice", "uniform":[1, 64]},
+#    "lr":{"_type":"choice", "uniform":[-6, -3]}, 
+
+BB_INPUT_TYPE (I I I R )
+X0 (2 5 32 -5 )
+LOWER_BOUND (1 1 1 -6 )
+UPPER_BOUND (6 6 64 -3 )
+
+BB_OUTPUT_TYPE OBJ
+MAX_BB_EVAL 50 
+
+BB_EXE "$python3 bb.py"
+NB_THREADS_OPENMP 1
+
+
+HISTORY_FILE history.txt 
+# DISPLAY_ALL_EVAL yes
+
+# STATS_FILE stats.txt BBE ( SOL ) OBJ
+
