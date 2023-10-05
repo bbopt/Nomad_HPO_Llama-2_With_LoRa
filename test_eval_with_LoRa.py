@@ -159,7 +159,7 @@ class SupervisedDataset(Dataset):
             ]
         elif context == "context":
             sources = [
-                prompt_context.format_map(example) if example.get("input", "") != "" else prompt_no_input.format_map(example)
+                prompt_context.format_map(example) if example.get("context", "") != "" else prompt_no_input.format_map(example)
                 for example in list_data_dict
             ]
         else:
