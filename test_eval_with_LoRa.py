@@ -19,7 +19,6 @@ from typing import Dict, Optional, Sequence
 
 import torch
 import transformers
-import utils
 from torch.utils.data import Dataset
 from transformers import Trainer
 from peft import PeftModel, TaskType
@@ -47,16 +46,26 @@ PROMPT_DICT = {
 
 @dataclass
 class ModelArguments:
-    model_name_or_path: str = field(default="meta-llama/Llama-2-7b-hf", metadata ={"help": "hf name of model or path"})
+    model_name_or_path: str = field(
+        default="meta-llama/Llama-2-7b-hf",
+        metadata={"help": "hf name of model or path"},
+    )
+
 
 @dataclass
 class LoRaArguments:
-    lora_path: str = field(default="./", metadata={"help": "Path to the LoRA  config and weight adjustment."})
+    lora_path: str = field(
+        default="./",
+        metadata={"help": "Path to the LoRA  config and weight adjustment."},
+    )
 
 
 @dataclass
 class DataArguments:
-    data_path: str = field(default="databricks/databricks-dolly-15k", metadata={"help": "Path to the training data."})
+    data_path: str = field(
+        default="databricks/databricks-dolly-15k",
+        metadata={"help": "Path to the training data."},
+    )
     section: str = field(default="train", metadata={"help": "Section of data to use "})
     output: str = field(default="response", metadata={"help": "Name of output"})
 
@@ -67,8 +76,11 @@ class TrainingArguments(transformers.TrainingArguments):
     optim: str = field(default="adamw_torch")
     model_max_length: int = field(
         default=512,
-        metadata={"help": "Maximum sequence length. Sequences will be right padded (and possibly truncated)."},
+        metadata={
+            "help": "Maximum sequence length. Sequences will be right padded (and possibly truncated)."
+        },
     )
+
 
 def smart_tokenizer_and_embedding_resize(
     special_tokens_dict: Dict,
@@ -86,14 +98,20 @@ def smart_tokenizer_and_embedding_resize(
         input_embeddings = model.get_input_embeddings().weight.data
         output_embeddings = model.get_output_embeddings().weight.data
 
-        input_embeddings_avg = input_embeddings[:-num_new_tokens].mean(dim=0, keepdim=True)
-        output_embeddings_avg = output_embeddings[:-num_new_tokens].mean(dim=0, keepdim=True)
+        input_embeddings_avg = input_embeddings[:-num_new_tokens].mean(
+            dim=0, keepdim=True
+        )
+        output_embeddings_avg = output_embeddings[:-num_new_tokens].mean(
+            dim=0, keepdim=True
+        )
 
         input_embeddings[-num_new_tokens:] = input_embeddings_avg
         output_embeddings[-num_new_tokens:] = output_embeddings_avg
 
 
-def _tokenize_fn(strings: Sequence[str], tokenizer: transformers.PreTrainedTokenizer) -> Dict:
+def _tokenize_fn(
+    strings: Sequence[str], tokenizer: transformers.PreTrainedTokenizer
+) -> Dict:
     """Tokenize a list of strings."""
     tokenized_list = [
         tokenizer(
@@ -107,7 +125,8 @@ def _tokenize_fn(strings: Sequence[str], tokenizer: transformers.PreTrainedToken
     ]
     input_ids = labels = [tokenized.input_ids[0] for tokenized in tokenized_list]
     input_ids_lens = labels_lens = [
-        tokenized.input_ids.ne(tokenizer.pad_token_id).sum().item() for tokenized in tokenized_list
+        tokenized.input_ids.ne(tokenizer.pad_token_id).sum().item()
+        for tokenized in tokenized_list
     ]
     return dict(
         input_ids=input_ids,
@@ -124,7 +143,9 @@ def preprocess(
 ) -> Dict:
     """Preprocess the data by tokenizing."""
     examples = [s + t for s, t in zip(sources, targets)]
-    examples_tokenized, sources_tokenized = [_tokenize_fn(strings, tokenizer) for strings in (examples, sources)]
+    examples_tokenized, sources_tokenized = [
+        _tokenize_fn(strings, tokenizer) for strings in (examples, sources)
+    ]
     input_ids = examples_tokenized["input_ids"]
     labels = copy.deepcopy(input_ids)
     for label, source_len in zip(labels, sources_tokenized["input_ids_lens"]):
@@ -135,20 +156,31 @@ def preprocess(
 class SupervisedDataset(Dataset):
     """Dataset for supervised fine-tuning."""
 
-    def __init__(self, data_path: str, section: str, output: str, tokenizer: transformers.PreTrainedTokenizer):
+    def __init__(
+        self,
+        data_path: str,
+        section: str,
+        output: str,
+        tokenizer: transformers.PreTrainedTokenizer,
+    ):
         super(SupervisedDataset, self).__init__()
         logging.warning("Loading data...")
         list_data_dict = load_dataset(data_path)[section]
-        
+
         logging.warning("Formatting inputs...")
-        prompt_input, prompt_no_input = PROMPT_DICT["prompt_input"], PROMPT_DICT["prompt_no_input"]
+        prompt_input, prompt_no_input = (
+            PROMPT_DICT["prompt_input"],
+            PROMPT_DICT["prompt_no_input"],
+        )
         sources = [
-            prompt_input.format_map(example) if example.get("input", "") != "" else prompt_no_input.format_map(example)
+            prompt_input.format_map(example)
+            if example.get("input", "") != ""
+            else prompt_no_input.format_map(example)
             for example in list_data_dict
         ]
-        targets = [f"{example[output]}{tokenizer.eos_token}" for example in list_data_dict]
-        
-
+        targets = [
+            f"{example[output]}{tokenizer.eos_token}" for example in list_data_dict
+        ]
 
         logging.warning("Tokenizing inputs... This may take some time...")
         data_dict = preprocess(sources, targets, tokenizer)
@@ -170,11 +202,15 @@ class DataCollatorForSupervisedDataset(object):
     tokenizer: transformers.PreTrainedTokenizer
 
     def __call__(self, instances: Sequence[Dict]) -> Dict[str, torch.Tensor]:
-        input_ids, labels = tuple([instance[key] for instance in instances] for key in ("input_ids", "labels"))
+        input_ids, labels = tuple(
+            [instance[key] for instance in instances] for key in ("input_ids", "labels")
+        )
         input_ids = torch.nn.utils.rnn.pad_sequence(
             input_ids, batch_first=True, padding_value=self.tokenizer.pad_token_id
         )
-        labels = torch.nn.utils.rnn.pad_sequence(labels, batch_first=True, padding_value=IGNORE_INDEX)
+        labels = torch.nn.utils.rnn.pad_sequence(
+            labels, batch_first=True, padding_value=IGNORE_INDEX
+        )
         return dict(
             input_ids=input_ids,
             labels=labels,
@@ -182,16 +218,32 @@ class DataCollatorForSupervisedDataset(object):
         )
 
 
-def make_supervised_data_module(tokenizer: transformers.PreTrainedTokenizer, data_args) -> Dict:
+def make_supervised_data_module(
+    tokenizer: transformers.PreTrainedTokenizer, data_args
+) -> Dict:
     """Make dataset and collator for supervised fine-tuning."""
-    eval_dataset = SupervisedDataset(tokenizer=tokenizer, data_path=data_args.data_path, section=data_args.section, output=data_args.output)
+    eval_dataset = SupervisedDataset(
+        tokenizer=tokenizer,
+        data_path=data_args.data_path,
+        section=data_args.section,
+        output=data_args.output,
+    )
     data_collator = DataCollatorForSupervisedDataset(tokenizer=tokenizer)
-    return dict(train_dataset=None, eval_dataset=eval_dataset, data_collator=data_collator)
+    return dict(
+        train_dataset=None, eval_dataset=eval_dataset, data_collator=data_collator
+    )
 
 
 def train():
-    parser = transformers.HfArgumentParser((ModelArguments, LoRaArguments, DataArguments, TrainingArguments))
-    model_args, lora_args, data_args, training_args = parser.parse_args_into_dataclasses()
+    parser = transformers.HfArgumentParser(
+        (ModelArguments, LoRaArguments, DataArguments, TrainingArguments)
+    )
+    (
+        model_args,
+        lora_args,
+        data_args,
+        training_args,
+    ) = parser.parse_args_into_dataclasses()
 
     model = transformers.AutoModelForCausalLM.from_pretrained(
         model_args.model_name_or_path,
@@ -204,7 +256,11 @@ def train():
     # peft_config = LoraConfig(task_type=TaskType.CAUSAL_LM, inference_mode=False, r=lora_args.lora_rank, lora_alpha=lora_args.lora_alpha, lora_dropout=lora_args.lora_dropout)
     # model = get_peft_model(model, peft_config)
 
-    tokenizer = transformers.AutoTokenizer.from_pretrained(
+    from logzero import logger
+
+    logger.debug(model_args)
+
+    tokenizer = transformers.LlamaTokenizer.from_pretrained(
         model_args.model_name_or_path,
         cache_dir=training_args.cache_dir,
         model_max_length=training_args.model_max_length,
@@ -228,9 +284,13 @@ def train():
     )
 
     data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)
-    trainer = Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
+    trainer = Trainer(
+        model=model, tokenizer=tokenizer, args=training_args, **data_module
+    )
+    # JUST TRYING TO RETRIEVE THE METRICS OF AN EVALUATION, NO TRAINING HERE
     metrics = trainer.evaluate()
     print(lora_args.lora_path, metrics)
+
 
 if __name__ == "__main__":
     train()
