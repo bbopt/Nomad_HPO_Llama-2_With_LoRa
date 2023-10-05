@@ -12,6 +12,10 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+# MODIFIED BY C. Tribes October 2023
+# FOR EVAL ONLY
+
+
 import copy
 import logging
 from dataclasses import dataclass, field
@@ -37,6 +41,11 @@ PROMPT_DICT = {
         "Write a response that appropriately completes the request.\n\n"
         "### Instruction:\n{instruction}\n\n### Input:\n{input}\n\n### Response:"
     ),
+    "prompt_context": (
+    "Below is an instruction that describes a task, paired with an input that provides further context. "
+    "Write a response that appropriately completes the request.\n\n"
+    "### Instruction:\n{instruction}\n\n### Context:\n{context}\n\n### Response:"
+    ),
     "prompt_no_input": (
         "Below is an instruction that describes a task. "
         "Write a response that appropriately completes the request.\n\n"
@@ -59,6 +68,7 @@ class DataArguments:
     data_path: str = field(default="databricks/databricks-dolly-15k", metadata={"help": "Path to the training data."})
     section: str = field(default="train", metadata={"help": "Section of data to use "})
     output: str = field(default="response", metadata={"help": "Name of output"})
+    context: str = field(default="context", metadata={"help": "Context of instruction to obtain output"})
 
 
 @dataclass
@@ -135,17 +145,26 @@ def preprocess(
 class SupervisedDataset(Dataset):
     """Dataset for supervised fine-tuning."""
 
-    def __init__(self, data_path: str, section: str, output: str, tokenizer: transformers.PreTrainedTokenizer):
+    def __init__(self, data_path: str, section: str, output: str, context: str, tokenizer: transformers.PreTrainedTokenizer):
         super(SupervisedDataset, self).__init__()
         logging.warning("Loading data...")
         list_data_dict = load_dataset(data_path)[section]
         
         logging.warning("Formatting inputs...")
-        prompt_input, prompt_no_input = PROMPT_DICT["prompt_input"], PROMPT_DICT["prompt_no_input"]
-        sources = [
-            prompt_input.format_map(example) if example.get("input", "") != "" else prompt_no_input.format_map(example)
-            for example in list_data_dict
-        ]
+        prompt_input, prompt_context, prompt_no_input = PROMPT_DICT["prompt_input"], PROMPT_DICT["prompt_context"], PROMPT_DICT["prompt_no_input"]
+        if context == "input":
+            sources = [
+                prompt_input.format_map(example) if example.get("input", "") != "" else prompt_no_input.format_map(example)
+                for example in list_data_dict
+            ]
+        elif context == "context":
+            sources = [
+                prompt_context.format_map(example) if example.get("input", "") != "" else prompt_no_input.format_map(example)
+                for example in list_data_dict
+            ]
+        else:
+            return
+
         targets = [f"{example[output]}{tokenizer.eos_token}" for example in list_data_dict]
         
 
@@ -184,7 +203,7 @@ class DataCollatorForSupervisedDataset(object):
 
 def make_supervised_data_module(tokenizer: transformers.PreTrainedTokenizer, data_args) -> Dict:
     """Make dataset and collator for supervised fine-tuning."""
-    eval_dataset = SupervisedDataset(tokenizer=tokenizer, data_path=data_args.data_path, section=data_args.section, output=data_args.output)
+    eval_dataset = SupervisedDataset(tokenizer=tokenizer, data_path=data_args.data_path, section=data_args.section, output=data_args.output, context=data_args.context)
     data_collator = DataCollatorForSupervisedDataset(tokenizer=tokenizer)
     return dict(train_dataset=None, eval_dataset=eval_dataset, data_collator=data_collator)
 
