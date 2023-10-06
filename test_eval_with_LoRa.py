@@ -282,7 +282,7 @@ def train():
     # peft_config = LoraConfig(task_type=TaskType.CAUSAL_LM, inference_mode=False, r=lora_args.lora_rank, lora_alpha=lora_args.lora_alpha, lora_dropout=lora_args.lora_dropout)
     # model = get_peft_model(model, peft_config)
 
-    tokenizer = transformers.LlamaTokenizer.from_pretrained(
+    tokenizer = transformers.AutoTokenizer.from_pretrained(
         model_args.model_name_or_path,
         cache_dir=training_args.cache_dir,
         model_max_length=training_args.model_max_length,
