@@ -4,6 +4,7 @@ import sys
 import os
 import numpy as np
 import time
+import json
 
 # Output file to parse
 single_output_base_eval = 'output_eval'
@@ -52,10 +53,12 @@ if __name__ == '__main__':
     bbOutput='Inf'
     with open(single_output_eval, "r") as file:
         lines = file.readlines()
-        train_loss = lines[len(lines)-1]["train_loss"]
-        eval_loss = lines[len(lines)-2]["eval_loss"]
-        train_runtime = lines[len(lines)-1]["train_runtime"]
-        eval_runtime = lines[len(lines)-2]["eval_runtime"]
+        lineM1 = lines[len(lines)-1].strip().replace("\'","\"")
+        lineM2 = lines[len(lines)-1].strip().replace("\'","\"")
+        train_loss = json.loads(lineM1)["train_loss"]
+        eval_loss = json.loads(lineM2)["eval_loss"]
+        train_runtime = json.loads(lineM1)["train_runtime"]
+        eval_runtime = json.loads(lineM2)["eval_runtime"]
         file.close()
         print(eval_loss, train_loss, eval_runtime, train_runtime, end="\n")
         
