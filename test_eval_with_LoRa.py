@@ -19,7 +19,7 @@
 import copy
 import logging
 from dataclasses import dataclass, field
-from typing import Dict, Optional, Sequence
+from typing import Dict, List, Optional, Sequence
 
 import torch
 import transformers
@@ -28,6 +28,8 @@ from transformers import Trainer
 from peft import PeftModel, TaskType
 
 from datasets import load_dataset
+
+from logzero import logger
 
 IGNORE_INDEX = -100
 DEFAULT_PAD_TOKEN = "[PAD]"
@@ -56,7 +58,7 @@ PROMPT_DICT = {
 @dataclass
 class ModelArguments:
     model_name_or_path: str = field(
-        default="meta-llama/Llama-2-7b-hf",
+        default="meta-llama/Llama-2-7b",
         metadata={"help": "hf name of model or path"},
     )
 
@@ -71,11 +73,23 @@ class LoRaArguments:
 
 @dataclass
 class DataArguments:
-    data_path: str = field(
-        default="databricks/databricks-dolly-15k",
+    data_paths: list[str] = field(
+        default_factory=list,
         metadata={"help": "Path to the training data."},
     )
-    section: str = field(default="train", metadata={"help": "Section of data to use "})
+    mixing_proportions: list[float] = field(
+        default_factory=list,
+        metadata={
+            "help": "In case a data mix has to be used, proportions of each dataset to be used."
+        },
+    )
+    mixing_seed: int = field(
+        default=42,
+        metadata={
+            "help": "(For reproducibility) In case a data mix has to be used, the seed to use to generate the random mix."
+        },
+    )
+    # section: str = field(default="train", metadata={"help": "Section of data to use "})
     output: str = field(default="response", metadata={"help": "Name of output"})
     context: str = field(
         default="context", metadata={"help": "Context of instruction to obtain output"}
@@ -167,18 +181,19 @@ def preprocess(
 
 class SupervisedDataset(Dataset):
     """Dataset for supervised fine-tuning."""
-    
+
     def __init__(
         self,
-        data_path: str,
-        section: str,
+        data_paths: str,
+        # section: str,
         output: str,
         context: str,
         tokenizer: transformers.PreTrainedTokenizer,
     ):
         super(SupervisedDataset, self).__init__()
         logging.warning("Loading data...")
-        list_data_dict = load_dataset(data_path)[section]
+        list_data_dict = load_dataset(data_path)
+        # list_data_dict = load_dataset(data_path)[section]
 
         logging.warning("Formatting inputs...")
         prompt_input, prompt_context, prompt_no_input = (
@@ -247,29 +262,63 @@ def make_supervised_data_module(
     tokenizer: transformers.PreTrainedTokenizer, data_args
 ) -> Dict:
     """Make dataset and collator for supervised fine-tuning."""
-    eval_dataset = SupervisedDataset(
-        tokenizer=tokenizer,
-        data_path=data_args.data_path,
-        section=data_args.section,
-        output=data_args.output,
-        context=data_args.context,
-    )
+
+    def create_datamix(
+        data_paths: List[str], proportions: List[float], seed: int
+    ) -> SupervisedDataset:
+        """
+        In case the user wants to mix several datasets, this function creates the mix based on given proportions.
+        The datasets should be given in the same format, especially with the same column names, since the concatenation will be done along axis 0.
+
+        Args
+            data_paths (List[str]): paths to local datasets or datasets to be loaded from the HuggingFace Hub.
+            proportions (List[float]): proportions of each dataset to be used in the mix.
+        Returns
+            A `SupervisedDataset` made of the required proportions.
+        """
+        datasets = [load_dataset(path) for path in data_paths]
+
+        logger.debug(datasets[0])
+        return None
+
+    if len(data_args.data_paths) == 1:
+        eval_dataset = SupervisedDataset(
+            tokenizer=tokenizer,
+            data_paths=data_args.data_paths,
+            # section=data_args.section,
+            output=data_args.output,
+            context=data_args.context,
+        )
+    else:
+        eval_dataset = create_datamix(
+            data_args.data_paths, data_args.proportions, data_args.mixing_seed
+        )
+
     data_collator = DataCollatorForSupervisedDataset(tokenizer=tokenizer)
     return dict(
         train_dataset=None, eval_dataset=eval_dataset, data_collator=data_collator
     )
 
 
+def list_of_strings(s: str) -> List[str]:
+    return s.split(",")
+
+
 def train():
     parser = transformers.HfArgumentParser(
         (ModelArguments, LoRaArguments, DataArguments, TrainingArguments)
     )
+    parser.add_argument("--proportion", nargs="+")
     (
         model_args,
         lora_args,
         data_args,
         training_args,
     ) = parser.parse_args_into_dataclasses()
+
+    assert len(data_args.data_paths) == len(
+        data_args.mixing_proportions
+    ), "You've requested for a data mix to be built but did not provide coherent proportions."
 
     model = transformers.AutoModelForCausalLM.from_pretrained(
         model_args.model_name_or_path,
@@ -282,7 +331,7 @@ def train():
     # peft_config = LoraConfig(task_type=TaskType.CAUSAL_LM, inference_mode=False, r=lora_args.lora_rank, lora_alpha=lora_args.lora_alpha, lora_dropout=lora_args.lora_dropout)
     # model = get_peft_model(model, peft_config)
 
-    tokenizer = transformers.AutoTokenizer.from_pretrained(
+    tokenizer = transformers.LlamaTokenizer.from_pretrained(
         model_args.model_name_or_path,
         cache_dir=training_args.cache_dir,
         model_max_length=training_args.model_max_length,
