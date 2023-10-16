@@ -29,6 +29,8 @@ from peft import PeftModel, TaskType
 
 from datasets import load_dataset
 
+from logzero import logger
+
 IGNORE_INDEX = -100
 DEFAULT_PAD_TOKEN = "[PAD]"
 DEFAULT_EOS_TOKEN = "</s>"
@@ -167,7 +169,7 @@ def preprocess(
 
 class SupervisedDataset(Dataset):
     """Dataset for supervised fine-tuning."""
-    
+
     def __init__(
         self,
         data_path: str,
