@@ -2,7 +2,7 @@
     "venv": "/local1/benasach/.venv/bin/activate",
     "hf_home": "/local1/benasach/.cache/huggingface",
     "hf_cache": "/local1/benasach/.cache/huggingface",
-    "log_dir": "/local1/benasach/nni/50trials_2GPUs/logs",
+    "log_dir": "/local1/benasach/nni/nomad_run3_comparison/logs",
     "cuda_visible": [
         0,
         1,
@@ -14,8 +14,8 @@
     "alpaca_path": "/home/benasach/dev/Nomad_HPO_Llama-2_With_LoRa/stanford_alpaca",
     "data_train_path": "/home/benasach/dev/Nomad_HPO_Llama-2_With_LoRa/data/train_mixed.json",
     "data_validation_path": "/home/benasach/dev/Nomad_HPO_Llama-2_With_LoRa/data/validation_mixed.json",
-    "output_dir": "/local1/benasach/nni/50trials_2GPUs/checkpoints",
-    "metrics_dir": "/local1/benasach/nni/50trials_2GPUs/metrics",
+    "output_dir": "/local1/benasach/nni/nomad_run3_comparison/checkpoints",
+    "metrics_dir": "/local1/benasach/nni/nomad_run3_comparison/metrics",
     "epochs": 2,
     "train_batch_size": 4
 }

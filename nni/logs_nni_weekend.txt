@@ -1,0 +1,4 @@
+[2023-11-03 17:54:42] [32mCreating experiment, Experiment ID: [36mxe2bct90[0m
+[2023-11-03 17:54:42] [32mStarting web server...[0m
+[2023-11-03 17:54:43] [32mSetting up...[0m
+[2023-11-03 17:54:43] [32mWeb portal URLs: [36mhttp://127.0.0.1:8085 http://169.254.3.1:8085 http://10.100.12.75:8085 http://192.168.122.1:8085[0m

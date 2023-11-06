@@ -1,0 +1,28 @@
+  0%|          | 0/9 [00:00<?, ?it/s][D 231103 17:33:58 nni_eval_metrics:11] Performing mmlu for DGyFJ
+[D 231103 18:25:11 nni_eval_metrics:11] Performing bbh for DGyFJ
+[D 231103 20:14:15 nni_eval_metrics:11] Performing drop for DGyFJ
+ 11%|█         | 1/9 [3:27:29<27:39:52, 12449.12s/it][D 231103 21:01:27 nni_eval_metrics:11] Performing mmlu for pnqIX
+[D 231103 21:52:33 nni_eval_metrics:11] Performing bbh for pnqIX
+[D 231103 23:40:10 nni_eval_metrics:11] Performing drop for pnqIX
+ 22%|██▏       | 2/9 [6:53:47<24:07:33, 12407.61s/it][D 231104 00:27:45 nni_eval_metrics:11] Performing mmlu for CXFnF
+[D 231104 01:18:38 nni_eval_metrics:11] Performing bbh for CXFnF
+[D 231104 03:06:31 nni_eval_metrics:11] Performing drop for CXFnF
+ 33%|███▎      | 3/9 [10:22:04<20:44:48, 12448.16s/it][D 231104 03:56:02 nni_eval_metrics:11] Performing mmlu for Vxq8g
+[D 231104 04:47:02 nni_eval_metrics:11] Performing bbh for Vxq8g
+[D 231104 06:22:48 nni_eval_metrics:11] Performing drop for Vxq8g
+ 44%|████▍     | 4/9 [13:36:55<16:52:26, 12149.29s/it][D 231104 07:10:53 nni_eval_metrics:11] Performing mmlu for V052k
+[D 231104 08:01:53 nni_eval_metrics:11] Performing bbh for V052k
+[D 231104 09:52:12 nni_eval_metrics:11] Performing drop for V052k
+ 56%|█████▌    | 5/9 [17:06:26<13:40:05, 12301.30s/it][D 231104 10:40:24 nni_eval_metrics:11] Performing mmlu for ZQlpC
+[D 231104 11:31:29 nni_eval_metrics:11] Performing bbh for ZQlpC
+[D 231104 13:29:28 nni_eval_metrics:11] Performing drop for ZQlpC
+ 67%|██████▋   | 6/9 [20:46:12<10:30:07, 12602.41s/it][D 231104 14:20:11 nni_eval_metrics:11] Performing mmlu for oBh7I
+[D 231104 15:11:01 nni_eval_metrics:11] Performing bbh for oBh7I
+[D 231104 17:09:33 nni_eval_metrics:11] Performing drop for oBh7I
+ 78%|███████▊  | 7/9 [24:25:34<7:06:10, 12785.33s/it] [D 231104 17:59:33 nni_eval_metrics:11] Performing mmlu for gIwmq
+[D 231104 18:50:31 nni_eval_metrics:11] Performing bbh for gIwmq
+[D 231104 20:52:12 nni_eval_metrics:11] Performing drop for gIwmq
+ 89%|████████▉ | 8/9 [28:08:30<3:36:13, 12973.24s/it][D 231104 21:42:28 nni_eval_metrics:11] Performing mmlu for llcP7
+[D 231104 22:33:28 nni_eval_metrics:11] Performing bbh for llcP7
+[D 231105 00:33:03 nni_eval_metrics:11] Performing drop for llcP7
+100%|██████████| 9/9 [31:49:10<00:00, 13056.54s/it]  100%|██████████| 9/9 [31:49:10<00:00, 12727.80s/it]
