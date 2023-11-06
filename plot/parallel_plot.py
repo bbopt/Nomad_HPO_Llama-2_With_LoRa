@@ -1,5 +1,4 @@
 import plotly.express as px
-import matplotlib.pyplot as plt
 import pandas as pd
 from logzero import logger
 from fire import Fire
@@ -8,9 +7,16 @@ from typing import Optional
 dropout_translation = {0: 1, 0.0001: 2, 0.001: 3, 0.01: 4, 0.1: 5, 1: 6}
 translate_dropout = lambda i: dropout_translation[i]
 
+rank_translation = [2**i for i in range(2, 10)]
+translate_rank = lambda i: rank_translation[int(i)-1]
+
 
 def load_df(
-    format: str, data_path: str, metric: str, dropout_translated: Optional[bool] = True
+    format: str,
+    data_path: str,
+    metric: str,
+    dropout_translated: Optional[bool] = True,
+    rank_translated: Optional[bool] = False,
 ) -> pd.DataFrame:
     loaders = {"csv": pd.read_csv, "excel": pd.read_excel, "json": pd.read_json}
     base_cols = ["rank", "dropout", "alpha", "lr"]
@@ -37,6 +43,9 @@ def load_df(
 
     if dropout_translated:
         subdf["dropout"] = subdf["dropout"].apply(translate_dropout)
+    if not rank_translated:
+        logger.debug(rank_translation)
+        subdf["rank"] = subdf["rank"].apply(translate_rank)
 
     return subdf
 
@@ -46,7 +55,8 @@ def parallel_plot(
     data_path: str,
     export_path: str,
     metric: Optional[str] = None,
-    dropout_translated: Optional[bool] = False,
+    dropout_translated: Optional[bool] = True,
+    rank_translated: Optional[bool] = False,
     title: Optional[str] = None,
     best_prop: Optional[float] = None,
 ) -> None:
@@ -69,7 +79,7 @@ def parallel_plot(
         Plots the parallel plot and saves it under the given path.
     """
 
-    df = load_df(format, data_path, metric, dropout_translated)
+    df = load_df(format, data_path, metric, dropout_translated, rank_translated)
 
     if best_prop:
         if not metric:
