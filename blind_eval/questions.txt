@@ -1,3 +1,1 @@
-I have 10 candies. If I eat 2 candies, how many candies do I have left?
-What would you say is the dominant color in Christmas decorations?
-What is 12 modulo 8?
+Give a short answer to the following question. There are 2 rabbits on Earth. Together, they give birth to 3 rabbits. How many rabbits are there on Earth?
