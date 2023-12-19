@@ -1,0 +1,81 @@
+  0%|          | 0/20 [00:00<?, ?it/s][D 231107 15:54:25 nni_eval_metrics:12] Performing mmlu for cBfON
+[D 231107 16:42:23 nni_eval_metrics:12] Performing bbh for cBfON
+[D 231107 18:36:33 nni_eval_metrics:12] Performing drop for cBfON
+[D 231107 19:24:26 nni_eval_metrics:12] Performing humaneval for cBfON
+  5%|▌         | 1/20 [3:53:15<73:51:49, 13995.25s/it][D 231107 19:47:40 nni_eval_metrics:12] Performing mmlu for pE5KO
+[D 231107 20:35:46 nni_eval_metrics:12] Performing bbh for pE5KO
+[D 231107 22:09:47 nni_eval_metrics:12] Performing drop for pE5KO
+[D 231107 22:56:30 nni_eval_metrics:12] Performing humaneval for pE5KO
+ 10%|█         | 2/20 [7:26:08<66:23:00, 13276.67s/it][D 231107 23:20:34 nni_eval_metrics:12] Performing mmlu for lSRHt
+[D 231108 00:08:34 nni_eval_metrics:12] Performing bbh for lSRHt
+[D 231108 01:55:18 nni_eval_metrics:12] Performing drop for lSRHt
+[D 231108 02:42:44 nni_eval_metrics:12] Performing humaneval for lSRHt
+ 15%|█▌        | 3/20 [11:12:03<63:17:41, 13403.64s/it][D 231108 03:06:29 nni_eval_metrics:12] Performing mmlu for hPWgR
+[D 231108 03:54:21 nni_eval_metrics:12] Performing bbh for hPWgR
+[D 231108 05:33:25 nni_eval_metrics:12] Performing drop for hPWgR
+[D 231108 06:19:57 nni_eval_metrics:12] Performing humaneval for hPWgR
+ 20%|██        | 4/20 [14:48:43<58:51:44, 13244.05s/it][D 231108 06:43:08 nni_eval_metrics:12] Performing mmlu for u1eTb
+[D 231108 07:31:05 nni_eval_metrics:12] Performing bbh for u1eTb
+[D 231108 09:19:05 nni_eval_metrics:12] Performing drop for u1eTb
+[D 231108 10:06:38 nni_eval_metrics:12] Performing humaneval for u1eTb
+ 25%|██▌       | 5/20 [18:35:46<55:45:14, 13380.99s/it][D 231108 10:30:12 nni_eval_metrics:12] Performing mmlu for nnnOr
+[D 231108 11:17:58 nni_eval_metrics:12] Performing bbh for nnnOr
+[D 231108 13:00:38 nni_eval_metrics:12] Performing drop for nnnOr
+[D 231108 13:46:30 nni_eval_metrics:12] Performing humaneval for nnnOr
+ 30%|███       | 6/20 [22:15:44<51:47:39, 13318.54s/it][D 231108 14:10:09 nni_eval_metrics:12] Performing mmlu for ExrbA
+[D 231108 14:57:55 nni_eval_metrics:12] Performing bbh for ExrbA
+[D 231108 16:34:17 nni_eval_metrics:12] Performing drop for ExrbA
+[D 231108 17:21:19 nni_eval_metrics:12] Performing humaneval for ExrbA
+ 35%|███▌      | 7/20 [25:55:46<47:57:26, 13280.48s/it][D 231108 17:50:11 nni_eval_metrics:12] Performing mmlu for CSGTS
+[D 231108 18:38:00 nni_eval_metrics:12] Performing bbh for CSGTS
+[D 231108 20:23:02 nni_eval_metrics:12] Performing drop for CSGTS
+[D 231108 21:09:41 nni_eval_metrics:12] Performing humaneval for CSGTS
+ 40%|████      | 8/20 [29:45:06<44:46:37, 13433.13s/it][D 231108 21:39:31 nni_eval_metrics:12] Performing mmlu for IPwZ7
+[D 231108 22:27:23 nni_eval_metrics:12] Performing bbh for IPwZ7
+[D 231109 00:09:25 nni_eval_metrics:12] Performing drop for IPwZ7
+[D 231109 00:56:30 nni_eval_metrics:12] Performing humaneval for IPwZ7
+ 45%|████▌     | 9/20 [33:26:07<40:52:51, 13379.27s/it][D 231109 01:20:32 nni_eval_metrics:12] Performing mmlu for bZwlf
+[D 231109 02:08:26 nni_eval_metrics:12] Performing bbh for bZwlf
+[D 231109 03:50:35 nni_eval_metrics:12] Performing drop for bZwlf
+[D 231109 04:37:54 nni_eval_metrics:12] Performing humaneval for bZwlf
+ 50%|█████     | 10/20 [37:04:07<36:54:31, 13287.13s/it][D 231109 04:58:33 nni_eval_metrics:12] Performing mmlu for p3jbf
+[D 231109 05:46:30 nni_eval_metrics:12] Performing bbh for p3jbf
+[D 231109 07:44:59 nni_eval_metrics:12] Performing drop for p3jbf
+[D 231109 08:33:24 nni_eval_metrics:12] Performing humaneval for p3jbf
+ 55%|█████▌    | 11/20 [41:13:42<34:30:33, 13803.69s/it][D 231109 09:08:08 nni_eval_metrics:12] Performing mmlu for GEPjn
+[D 231109 09:56:07 nni_eval_metrics:12] Performing bbh for GEPjn
+[D 231109 11:53:28 nni_eval_metrics:12] Performing drop for GEPjn
+[D 231109 12:42:01 nni_eval_metrics:12] Performing humaneval for GEPjn
+ 60%|██████    | 12/20 [45:21:39<31:24:01, 14130.17s/it][D 231109 13:16:05 nni_eval_metrics:12] Performing mmlu for c5Kv2
+[D 231109 14:03:47 nni_eval_metrics:12] Performing bbh for c5Kv2
+[D 231109 16:01:14 nni_eval_metrics:12] Performing drop for c5Kv2
+[D 231109 16:49:18 nni_eval_metrics:12] Performing humaneval for c5Kv2
+ 65%|██████▌   | 13/20 [49:25:09<27:45:27, 14275.41s/it][D 231109 17:19:35 nni_eval_metrics:12] Performing mmlu for ZpFor
+[D 231109 18:07:23 nni_eval_metrics:12] Performing bbh for ZpFor
+[D 231109 20:08:29 nni_eval_metrics:12] Performing drop for ZpFor
+[D 231109 20:56:58 nni_eval_metrics:12] Performing humaneval for ZpFor
+ 70%|███████   | 14/20 [53:34:01<24:07:21, 14473.62s/it][D 231109 21:28:26 nni_eval_metrics:12] Performing mmlu for yDSn9
+[D 231109 22:16:33 nni_eval_metrics:12] Performing bbh for yDSn9
+[D 231110 00:16:04 nni_eval_metrics:12] Performing drop for yDSn9
+[D 231110 01:05:03 nni_eval_metrics:12] Performing humaneval for yDSn9
+ 75%|███████▌  | 15/20 [57:42:15<20:16:42, 14600.58s/it][D 231110 01:36:41 nni_eval_metrics:12] Performing mmlu for DM14K
+[D 231110 02:24:36 nni_eval_metrics:12] Performing bbh for DM14K
+[D 231110 04:25:38 nni_eval_metrics:12] Performing drop for DM14K
+[D 231110 05:14:32 nni_eval_metrics:12] Performing humaneval for DM14K
+ 80%|████████  | 16/20 [61:52:58<16:22:14, 14733.52s/it][D 231110 05:47:23 nni_eval_metrics:12] Performing mmlu for C7ME6
+[D 231110 06:35:34 nni_eval_metrics:12] Performing bbh for C7ME6
+[D 231110 08:36:46 nni_eval_metrics:12] Performing drop for C7ME6
+[D 231110 09:25:45 nni_eval_metrics:12] Performing humaneval for C7ME6
+ 85%|████████▌ | 17/20 [66:02:59<12:20:42, 14814.21s/it][D 231110 09:57:25 nni_eval_metrics:12] Performing mmlu for JQe1n
+[D 231110 10:45:31 nni_eval_metrics:12] Performing bbh for JQe1n
+[D 231110 12:46:39 nni_eval_metrics:12] Performing drop for JQe1n
+[D 231110 13:34:44 nni_eval_metrics:12] Performing humaneval for JQe1n
+ 90%|█████████ | 18/20 [70:12:09<8:15:09, 14854.99s/it] [D 231110 14:06:35 nni_eval_metrics:12] Performing mmlu for sps9X
+[D 231110 14:54:30 nni_eval_metrics:12] Performing bbh for sps9X
+[D 231110 16:51:09 nni_eval_metrics:12] Performing drop for sps9X
+[D 231110 17:40:04 nni_eval_metrics:12] Performing humaneval for sps9X
+ 95%|█████████▌| 19/20 [74:18:36<4:07:14, 14834.37s/it][D 231110 18:13:01 nni_eval_metrics:12] Performing mmlu for O3aU7
+[D 231110 19:00:25 nni_eval_metrics:12] Performing bbh for O3aU7
+[D 231110 21:00:56 nni_eval_metrics:12] Performing drop for O3aU7
+[D 231110 21:49:41 nni_eval_metrics:12] Performing humaneval for O3aU7
+100%|██████████| 20/20 [78:27:41<00:00, 14867.59s/it]  100%|██████████| 20/20 [78:27:41<00:00, 14123.06s/it]

@@ -1,15 +1,40 @@
+import plotly
 import plotly.express as px
 import pandas as pd
 from logzero import logger
 from fire import Fire
 from typing import Optional
+import numpy as np
 
-dropout_translation = {0: 1, 0.0001: 2, 0.001: 3, 0.01: 4, 0.1: 5, 1: 6}
-translate_dropout = lambda i: dropout_translation[i]
+dropout_translation = [0, 0.0001, 0.001, 0.01, 0.1, 1]
+def translate_dropout(idx):
+    if np.isnan(idx):
+        return np.nan
+    return dropout_translation[int(idx) - 1]
 
 rank_translation = [2**i for i in range(2, 10)]
-translate_rank = lambda i: rank_translation[int(i)-1]
+def translate_rank(idx):
+    if np.isnan(idx):
+        return np.nan
+    return rank_translation[int(idx) - 1]
 
+def untranslate_dropout(value):
+    if np.isnan(value):
+        return np.nan
+    for i in range(len(dropout_translation)):
+        if dropout_translation[i] == value:
+            return i + 1
+    return np.nan
+
+def untranslate_rank(value):
+    if np.isnan(value):
+        return np.nan
+    for i in range(len(rank_translation)):
+        if rank_translation[i] == value:
+            return i + 1
+    return np.nan
+
+base_cols = ["rank", "dropout", "alpha", "lr"]
 
 def load_df(
     format: str,
@@ -42,12 +67,15 @@ def load_df(
     subdf = df[columns_in_return]
 
     if dropout_translated:
-        subdf["dropout"] = subdf["dropout"].apply(translate_dropout)
-    if not rank_translated:
-        logger.debug(rank_translation)
-        subdf["rank"] = subdf["rank"].apply(translate_rank)
+        subdf["dropout"] = subdf["dropout"].apply(untranslate_dropout)
+    if rank_translated:
+        subdf["rank"] = subdf["rank"].apply(untranslate_rank)
 
-    return subdf
+    subdf_nan = subdf[-np.any(np.isnan(subdf),axis=1)]
+
+    if metric:
+        return subdf_nan.sort_values(by=metric)
+    return subdf_nan
 
 
 def parallel_plot(
@@ -59,6 +87,7 @@ def parallel_plot(
     rank_translated: Optional[bool] = False,
     title: Optional[str] = None,
     best_prop: Optional[float] = None,
+    export_format: Optional[str] = "html",
 ) -> None:
     """
     Takes a file with data from an optimisation to generate an interactive parallel plot.
@@ -91,18 +120,30 @@ def parallel_plot(
 
     if metric:
         logger.info("Generating parallel plot with metric {}...".format(metric))
-        fig = px.parallel_coordinates(df, color=metric, title=title)
+        logger.debug(df)
+        fig = px.parallel_coordinates(df, dimensions=base_cols + ["eval_loss"], color=metric, title=title)
     else:
         logger.info("Generating parallel plot...")
         fig = px.parallel_coordinates(df, title=title)
 
-    fig["data"][0]["dimensions"][3]["label"] = (
-        fig["data"][0]["dimensions"][3]["label"] + "(10^{value})"
-    )
-    fig["data"][0]["dimensions"][1]["ticktext"] = list(dropout_translation.keys())
-    fig["data"][0]["dimensions"][1]["tickvals"] = list(dropout_translation.values())
+    fig["data"][0]["dimensions"][0]["label"] = r"LoRA rank"
+    fig["data"][0]["dimensions"][1]["label"] = r"LoRA dropout"
+    fig["data"][0]["dimensions"][2]["label"] = r"LoRA alpha"
+    fig["data"][0]["dimensions"][3]["label"] = r"log10(learning rate)"
+    fig["data"][0]["dimensions"][4]["label"] = "Validation             <br>loss                      "
+    fig.update(layout_coloraxis_showscale=False)
 
-    fig.write_html(export_path)
+    fig["data"][0]["dimensions"][0]["ticktext"] = rank_translation
+    fig["data"][0]["dimensions"][0]["tickvals"] = list(range(1, len(rank_translation)+1))
+    fig["data"][0]["dimensions"][1]["ticktext"] = dropout_translation
+    fig["data"][0]["dimensions"][1]["tickvals"] = list(range(1, len(dropout_translation)+1))
+
+    fig.update_layout(font_family="Times-New-Roman")
+
+    if export_format == "html":
+        fig.write_html(export_path)
+    else:
+        plotly.io.write_image(fig, export_path, format=export_format)
     logger.info("Plot successfully saved under {}.".format(export_path))
     return None
 

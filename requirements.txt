@@ -1,7 +1,6 @@
 numpy
 pandas
 torch
-json
 plotly
 matplotlib
 openpyxl

@@ -2,3 +2,7 @@
 [2023-11-03 17:54:42] [32mStarting web server...[0m
 [2023-11-03 17:54:43] [32mSetting up...[0m
 [2023-11-03 17:54:43] [32mWeb portal URLs: [36mhttp://127.0.0.1:8085 http://169.254.3.1:8085 http://10.100.12.75:8085 http://192.168.122.1:8085[0m
+[2023-11-07 06:50:09] [32mStopping experiment, please wait...[0m
+[2023-11-07 06:50:09] [32mSaving experiment checkpoint...[0m
+[2023-11-07 06:50:09] [32mStopping NNI manager, if any...[0m
+[2023-11-07 06:50:10] [32mExperiment stopped.[0m

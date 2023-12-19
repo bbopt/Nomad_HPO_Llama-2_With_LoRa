@@ -35,10 +35,14 @@ def generate_from_prompt(
     tokenizer: LlamaTokenizer,
     device: str,
     max_tokens: int,
+    context: Optional[bool]
 ) -> str:
+    context_prompt = "Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{instruction}\n\n### Response:"
+    if context:
+        prompt = context_prompt.format(instruction=prompt)
     inputs = tokenizer(prompt, return_tensors="pt").to(device)
     outputs = model.generate(
-        **inputs, max_new_tokens=max_tokens, do_sample=True, temperature=0.7
+        **inputs, max_length=2048, top_p=0.9, do_sample=True, num_return_sequences=1, temperature=0.9
     )
     length = inputs.input_ids.shape[1]
 
@@ -52,6 +56,7 @@ def main(
     lora_path: Optional[str] = None,
     device: Optional[str] = "cuda",
     max_tokens: Optional[int] = 1024,
+    context: Optional[bool] = False
 ) -> None:
     assert output_file.endswith(
         ".json"
@@ -73,7 +78,7 @@ def main(
 
     logger.debug("Answering questions...")
     for question in tqdm(questions):
-        output = generate_from_prompt(question["text"], model, tokenizer, device, max_tokens)
+        output = generate_from_prompt(question["text"], model, tokenizer, device, max_tokens, context)
         outputs.append(
             {
                 "question_id": question["question_id"],
