@@ -18,9 +18,9 @@ We perform the fine-tuning of the 7B parameter variant of LLaMA 2 on a 53k-sized
 W_0x+\Delta Wx\simeq W_0x+\frac{\alpha}{r}BAx\enspace.
 ```
 
-with `$B\in\mathbb{R}^{d\times r}, A\in\mathbb{R}^{r\times k}$` and `$\alpha\in\mathbb{N}$`.
+with $`B\in\mathbb{R}^{d\times r}, A\in\mathbb{R}^{r\times k}`$ and $`\alpha\in\mathbb{N}`$.
 
-We seek to optimize the choice of 4 hyperparameters within this context: `$r$`, `$\alpha$`, the dropout probability of the optimizer AdamW and the learning rate of the fine-tuning. Each combination is denoted as a vector of hyperparameters `\theta=(r,\alpha,dropout,lr)^ \top`.
+We seek to optimize the choice of 4 hyperparameters within this context: $`r`$, $`\alpha`$, the dropout probability of the optimizer AdamW and the learning rate of the fine-tuning. Each combination is denoted as a vector of hyperparameters $`\theta=(r,\alpha,dropout,lr)^ \top`$.
 
 ## Contact
 
