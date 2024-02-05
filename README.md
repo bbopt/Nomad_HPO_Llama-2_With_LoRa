@@ -50,16 +50,18 @@ with NOMAD.
 
 ## Already run experiments
 
+Each experiment sets a specific objective function and uses specific sets of values for each variable.
+
 <a id="exp1">### Experiment 1</a>
 This experiment tries to solve
 ```math
-    \max\limits_{\theta\in\Theta}\quad\text{MMLU}(\text{LoRA}(\textsc{LLaMA-2-7B},\mathcal{D},\theta))\enspace.
+    \max\limits_{\theta\in\Theta}\quad\text{MMLU}(\text{LoRA}(\text{LLaMA-2-7B},\mathcal{D},\theta))\enspace.
 ```
 
 <a id="exp2">### Experiment 2</a>
 This experiment tries to solve
 ```math
-    \min_{\theta\in\Theta}\quad\mathcal{L}\left(\text{LoRA}(\textsc{LLaMA-2-7B},\theta),\mathcal{D}_{\text{valid}}\right)\enspace.
+    \min_{\theta\in\Theta}\quad\mathcal{L}\left(\text{LoRA}(\text{LLaMA-2-7B},\theta),\mathcal{D}_{\text{valid}}\right)\enspace.
 ```
 
 ## Contact
