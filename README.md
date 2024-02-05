@@ -12,13 +12,15 @@ In the following, the reader is assumed to be familiar with the theory developed
 
 ## Approach
 
-### Goal
-
-Our goal 
+We perform the fine-tuning of the 7B parameter variant of LLaMA 2 on a 53k-sized dataset of instructions with the LoRA fine-tuning method. Recall that the LoRA method relies on the following quasi-equality:
 
 ```math
 W_0x+\Delta Wx\simeq W_0x+\frac{\alpha}{r}BAx\enspace.
 ```
+
+with `$B\in\mathbb{R}^{d\times r}, A\in\mathbb{R}^{r\times k}$` and `$\alpha\in\mathbb{N}$`.
+
+We seek to optimize the choice of 4 hyperparameters within this context: `$r$`, `$\alpha$`, the dropout probability of the optimizer AdamW and the learning rate of the fine-tuning. Each combination is denoted as a vector of hyperparameters `\theta=(r,\alpha,dropout,lr)^ \top`.
 
 ## Contact
 
@@ -44,3 +46,7 @@ For any questions about the theory or the code presented in this repo, you may c
 
 ## References
 <a id="Vas17">[Vas+17]</a> A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A.N. Gomez, L. Kaiser, & I. Polosukhin (2017). Attention is All You Need. In *Proceedings of the 31st International Conference on Neural Information Processing Systems* (pp. 6000–6010). Curran Associates Inc..
+
+<a id="Hu21">[Hu+21]</a> E.J. Hu, Y. Shen, P. Wallis, Z. Allen-Zhu, Y. Li, S. Wang, L. Wang, & W. Chen. (2021). LoRA: Low-Rank Adaptation of Large Language Models.
+
+<a id="Touv23">[Touv+23]</a> H. Touvron, L. Martin, K. Stone, P. Albert, A. Almahairi, Y. Babaei, N. Bashlykov, S. Batra, P. Bhargava, S. Bhosale, D. Bikel, L. Blecher, C. Canton Ferrer, M. Chen, G. Cucurull, D. Esiobu, J. Fernandes, J. Fu, W. Fu, B. Fuller, C. Gao, V. Goswami, N. Goyal, A. Hartshorn, S. Hosseini, R. Hou, H. Inan, M. Kardas, V. Kerkez, M. Khabsa, I. Kloumann, A. Korenev, P. Singh Koura, M-A. Lachaux, T. Lavril, J. Lee, D. Liskovich, Y. Lu, Y. Mao, X. Martinet, T. Mihaylov, P. Mishra, I. Molybog, Y. Nie, A. Poulton, J. Reizenstein, R. Rungta, K. Saladi, A. Schelten, R. Silva, E.M. Smith, R. Subramanian, X.E. Tan, B. Tang, R. Taylor, A. Williams, J.X. Kuan, P. Xu, Z. Yan, I. Zarov, Y. Zhang, A. Fan, M. Kambadur, S. Narang, A. Rodriguez, R. Stojnic, S. Edunov, & T. Scialom. (2023). Llama 2: Open Foundation and Fine-Tuned Chat Models..
