@@ -8,7 +8,13 @@ This repo gathers the work that has been done by the BBO team @ GERAD for the Hy
 
 The PDF document `approach.pdf` in the `Docs` folder thoroughly describes the theory behind our work, as well as our approach. It is recommended to read it first in order to fully understand what is undertaken here.
 
+In the following, the reader is assumed to be familiar with the theory developed in this document, especially with: the Transformers architecture [[Vas+17]](#Vas17), the concept of instruction-tuning, the LoRA fine-tuning method [[Hu+21]](#Hu21), 4 widespread NLP tests (MMLU, BBH, DROP and HumanEval) and the family of LLaMA language models. [[Touv+23]](#Touv23)
+
 ## Approach
+
+### Goal
+
+Our goal 
 
 ```math
 W_0x+\Delta Wx\simeq W_0x+\frac{\alpha}{r}BAx\enspace.
@@ -35,3 +41,6 @@ For any questions about the theory or the code presented in this repo, you may c
 * Rank: 8
 * Alpha: 8
 * Dropout: 0
+
+## References
+<a id="Vas17">[Vas+17]</a> A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A.N. Gomez, L. Kaiser, & I. Polosukhin (2017). Attention is All You Need. In *Proceedings of the 31st International Conference on Neural Information Processing Systems* (pp. 6000–6010). Curran Associates Inc..
