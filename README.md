@@ -22,6 +22,46 @@ with $`B\in\mathbb{R}^{d\times r}, A\in\mathbb{R}^{r\times k}`$ and $`\alpha\in\
 
 We seek to optimize the choice of 4 hyperparameters within this context: $`r`$, $`\alpha`$, the dropout probability of the optimizer AdamW and the learning rate of the fine-tuning. Each combination is denoted as a vector of hyperparameters $`\theta=(r,\alpha,dropout,lr)^ \top`$.
 
+## Requirements
+
+The HuggingFace API is central to our experiment. It implements language models, training and test procedures. See [Transformers](https://huggingface.co/docs/transformers/index) and [PEFT](https://huggingface.co/docs/peft/index) especially.
+
+
+* Python >= 3.9
+* All dependecies are listed in the `requirements.txt` file. Run
+```bash
+python3.9 -m pip install -r requirements.txt
+```
+to install all libraries at once.
+* If you wish to use a LLaMA model through the HuggingFace Transformers API, you will need to be authorized by Meta AI. Follow the instructions on the HuggingFace webpage dedicated to the model you want to use (for the 7B version we used, see [here](https://huggingface.co/meta-llama/Llama-2-7b-hf)).
+* Plan that you will need a significant amount of GPU memory. At GERAD, only the `atlas` server was able to run our experiments. You will need the A100 GPUs with 80Gb RAM (40Gb will not be enough).
+    :white_check_mark: you CAN run an optimization with less than 4 GPUs but expect the computation to be slower.
+    :x: you CANNOT run an optimization with any of the 40Gb RAM GPUs. The size of the model and the data will cause an overflow.
+* NOMAD 4
+
+## Repo organization
+
+* `bbo` contains all files needed to reproduce the experiment described in [experiment 1](#exp1)
+
+with NOMAD.
+* `bbo
+
+## The pipeline
+
+## Already run experiments
+
+<a id="exp1">### Experiment 1</a>
+This experiment tries to solve
+```math
+    \max\limits_{\theta\in\Theta}\quad\text{MMLU}(\text{LoRA}(\textsc{LLaMA-2-7B},\mathcal{D},\theta))\enspace.
+```
+
+<a id="exp2">### Experiment 2</a>
+This experiment tries to solve
+```math
+    \min_{\theta\in\Theta}\quad\mathcal{L}\left(\text{LoRA}(\textsc{LLaMA-2-7B},\theta),\mathcal{D}_{\text{valid}}\right)\enspace.
+```
+
 ## Contact
 
 For any questions about the theory or the code presented in this repo, you may contact:
