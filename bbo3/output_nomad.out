@@ -1,0 +1,39 @@
+All variables are granular. MAX_EVAL is set to 2700 to prevent algorithm from circling around best solution indefinitely
+Version 4.3.1 
+ 
+NOMAD 4 has been created by 
+    Viviane Rochon Montplaisir 
+    Christophe Tribes 
+
+The copyright of NOMAD 4 is owned by 
+    Charles Audet 
+    Sebastien Le Digabel 
+    Viviane Rochon Montplaisir 
+    Christophe Tribes 
+
+NOMAD 4 has been funded by Rio Tinto, Hydro-Québec, Huawei-Canada, 
+ NSERC (Natural Sciences and Engineering Research Council of Canada), 
+ InnovÉÉ (Innovation en Énergie Électrique) and 
+ IVADO (The Institute for Data Valorization) 
+
+Download  : https://www.gerad.ca/nomad or 
+ https://github.com/bbopt/nomad 
+License   : see LICENSE file 
+User guide: https://nomad-4-user-guide.readthedocs.io 
+Help      : run nomad -h KEYWORD on the command line 
+Examples  : see 'examples' directory 
+
+Please report bugs to nomad@gerad.ca or 
+create an issue at https://github.com/bbopt/nomad 
+
+
+[D 231220 17:48:54 bb:100] 1
+Warning: EvaluatorControl: Point #0 ( 2 8 1 )	Evaluation OK	 0.875914454460144 0.7691959693101034: Eval ok but output "0.875914454460144 0.7691959693101034" does not match parameter BB_OUTPUT_TYPE: "OBJ BBO_UNDEFINED BBO_UNDEFINED BBO_UNDEFINED ". Setting eval status to EVAL_FAILED.
+X0 evaluation failed for X0 = ( 2 8 1 )
+A termination criterion is reached: No termination (all). Problem with starting point evaluation (Algo) No more points to evaluate
+
+Best feasible solution:     Undefined.
+
+Best infeasible solution:   Undefined.
+
+Blackbox evaluations: 1

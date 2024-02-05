@@ -21,4 +21,3 @@ HISTORY_FILE history.txt
 # DISPLAY_ALL_EVAL yes
 
 # STATS_FILE stats.txt BBE ( SOL ) OBJ
-

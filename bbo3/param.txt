@@ -1,0 +1,18 @@
+DIMENSION 3
+
+#    "lora_rank": {"_type":"choice", "_value": [4, 8, 16, 32, 64]},
+#    "lora_alpha": {"_type":"choice", "uniform":[1, 64] * lora_rank},
+#    "lora_dropout": {"_type":"choice", "_value": [0, 0.0001,  0.001, 0.01, 0.1]},
+
+BB_INPUT_TYPE (I I I)
+X0 (2 8 1)
+LOWER_BOUND (1 1 1)
+UPPER_BOUND (5 64 5)
+
+BB_OUTPUT_TYPE OBJ EXTRA_O EXTRA_O EXTRA_O
+MAX_BB_EVAL 50
+
+BB_EXE "$python3 bb.py"
+NB_THREADS_OPENMP 1
+
+HISTORY_FILE history.txt
