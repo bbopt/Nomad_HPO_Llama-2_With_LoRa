@@ -4,7 +4,7 @@
 
 This repo gathers the work that has been done by the BBO team @ GERAD for the Hyperparameter Optimization (HPO) project in the context of the Alliance with *Huawei-Canada* between september 2023 and february 2024.
 
-## Starting point
+## Get started
 
 The PDF document `approach.pdf` in the `Docs` folder thoroughly describes the theory behind our work, as well as our approach. It is recommended to read it first in order to fully understand what is undertaken here.
 
@@ -15,18 +15,18 @@ In the following, the reader is assumed to be familiar with the theory developed
 We perform the fine-tuning of the 7B parameter variant of LLaMA 2 on a 53k-sized dataset of instructions with the LoRA fine-tuning method. Recall that the LoRA method relies on the following quasi-equality:
 
 ```math
-W_0x+\Delta Wx\simeq W_0x+\frac{\alpha}{r}BAx\enspace.
+\forall x\in\mathbb{R}^d,\quad W_0x+\Delta Wx\simeq W_0x+\frac{\alpha}{r}BAx\enspace.
 ```
 
-with $`B\in\mathbb{R}^{d\times r}, A\in\mathbb{R}^{r\times k}`$ and $`\alpha\in\mathbb{N}`$.
+with $`B\in\mathbb{R}^{k\times r}, A\in\mathbb{R}^{r\times d}`$ and $`\alpha\in\mathbb{N}`$.
 
-We seek to optimize the choice of 4 hyperparameters within this context: $`r`$, $`\alpha`$, the dropout probability of the optimizer AdamW and the learning rate of the fine-tuning. Each combination is denoted as a vector of hyperparameters $`\theta=(r,\alpha,dropout,lr)^ \top`$.
+We seek to optimize the choice of 4 hyperparameters (HPs) within this context: $`r`$, $`\alpha`$, the dropout probability of the optimizer AdamW and the learning rate of the fine-tuning. Each combination is denoted as a vector of hyperparameters $`\theta=(r,\alpha,dropout,lr)^ \top`$.
 
 ## Requirements
 
 The HuggingFace API is central to our experiment. It implements language models, training and test procedures. See [Transformers](https://huggingface.co/docs/transformers/index) and [PEFT](https://huggingface.co/docs/peft/index) especially.
 
-
+Global requirements are:
 * Python >= 3.9
 * All dependecies are listed in the `requirements.txt` file. Run
 ```bash
@@ -41,12 +41,35 @@ to install all libraries at once.
 
 ## Repo organization
 
-* `bbo` contains all files needed to reproduce the experiment described in [experiment 1](#exp1)
+* `bbo` contains all files needed to reproduce the experiment described in [experiment 1](#exp1).
+* `bbo2` contains all files needed to reproduce the experiment described in [experiment 2](#exp2).
+* `bbo3` contains all files needed to reproduce the experiment described in [experiment 3](#exp2).
+* `blind_eval` contains data and scripts we used to generate text answers from our models in order to conduct the survey for human evaluation.
+* `data` contains the data used for training and valiation.
+* `eval` contains some scripts useful to run the evaluation of the model on a dataset.
+* `nni` contains the files needed to reproduce an experiment that is described in deeper details in the appropriate folder.
+* `plot` contains a script to draw a parallel plot from a statistics file.
+* `train` contains scripts used to run the training phase of our pipeline.
 
-with NOMAD.
-* `bbo
+## Pipeline implementation
 
-## The pipeline
+The pipeline is usually broken down into 2 files:
+1. `bb.py`
+    * reads the encoded values of the 4 HPs given by NOMAD,
+    * if a history file is provided, checks whether a very close point has already been evaluated. If so, returns the associated blackbox value,
+    * calls ` eval.py` to perform the training and evaluation phases,
+    * reads the results of the evaluation in a file and returns it to NOMAD.
+2. `eval.py`
+    * reads the encoded values of the 4 HPs given by NOMAD and translates them into actual values (see encoding for every experiment),
+    * chooses the GPUs that will be used for computation (variable `cuda_visible_devices` at the beginning of the file). Before lauching an experiment, check which GPUs are available with `nvidia-smi` . A script like [nvidia-htop](https://github.com/peci1/nvidia-htop) can be useful if you need to see who is running processes on GPUs (and know how you can share the resources);
+    * runs the following command in order to perform training and validation with the appropriate HPs. Elements that should be adapted to your local setup or customized are between braces `<the element>`.
+
+```bash
+source <path to your Python virtual environment>; export HF_HOME=<path to your local HuggingFace hub folder>; export WANDB_MODE=offline; 
+CUDA_VISIBLE_DEVICES=<list of GPUs IDs to be used> torchrun -r 2 --log_dir <path to the directory where PyTorch writes log files> --proc_per_node <amount of used GPUs> train/train_with_LoRa_mixed_data.py --model_name_or_path <name of your LLM on the HF hub> --data_path_train <path to the file containing your training data> --do_eval <True | False to perform evaluation> --data_path_eval <path to the file containing your evaluation data> --bf16 True --output_dir <path to the folder where the fine-tuned models will be stored> --num_train_epochs <number of training epochs> --per_device_train_batch_size <your training batch size> --per_device_eval_batch_size <your evaluation batch size> --gradient_accumulation_steps 8 --evaluation_strategy "epoch" --save_strategy "steps" --save_steps 2000 --save_total_limit 1 --learning_rate <value given by NOMAD> --weight_decay 0. --warmup_ratio 0.03 --lr_scheduler_type "cosine" --logging_steps 1 --tf32 True --lora_rank <rank value given by NOMAD> --lora_dropout <dropout value given by NOMAD> --lora_alpha <alpha value given by NOMAD>; deactivate
+```
+
+this command line will 
 
 ## Already run experiments
 
