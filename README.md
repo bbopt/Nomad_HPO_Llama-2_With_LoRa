@@ -67,7 +67,15 @@ The pipeline is usually broken down into 2 files:
 ```bash
 source <venv_path>; export HF_HOME=<hf_path>; export WANDB_MODE=offline; 
 CUDA_VISIBLE_DEVICES=<gpus> torchrun -r 2
---log_dir <log_path> --proc_per_node <nb_gpus> train/train_with_LoRa_mixed_data.py --model_name_or_path <pt_model> --data_path_train <training_data> --do_eval <eval> --data_path_eval <eval_data> --bf16 True --output_dir <checkpoints_path> --num_train_epochs <epochs> --per_device_train_batch_size <training_batch_size> --per_device_eval_batch_size <eval_batch_size> --gradient_accumulation_steps 8 --evaluation_strategy <eval_strategy> --save_strategy "steps" --save_steps 2000 --save_total_limit 1 --learning_rate <lr> --weight_decay 0. --warmup_ratio 0.03 --lr_scheduler_type "cosine" --logging_steps 1 --tf32 True --lora_rank <rank> --lora_dropout <dropout> --lora_alpha <alpha>; deactivate
+--log_dir <log_path> --proc_per_node <nb_gpus> train/train_with_LoRa_mixed_data.py
+--model_name_or_path <pt_model> --data_path_train <training_data> --do_eval <eval>
+--data_path_eval <eval_data> --bf16 True --output_dir <checkpoints_path>
+--num_train_epochs <epochs> --per_device_train_batch_size <training_batch_size>
+--per_device_eval_batch_size <eval_batch_size> --gradient_accumulation_steps 8
+--evaluation_strategy <eval_strategy> --save_strategy "steps" --save_steps 2000
+--save_total_limit 1 --learning_rate <lr> --weight_decay 0. --warmup_ratio 0.03
+--lr_scheduler_type "cosine" --logging_steps 1 --tf32 True --lora_rank <rank>
+--lora_dropout <dropout> --lora_alpha <alpha>; deactivate
 ```
 
 this command line will:
@@ -98,7 +106,7 @@ Each experiment sets a specific objective function and uses specific sets of val
 
 ### Experiment 1
 <a id="exp1"></a>
-This experiment uses the *MMLU score* of the language model as the objective function to *maximize*. It uses the whole Alpaca dataset. Possible values and encodings for each HP are as follows:
+This experiment uses the **MMLU score** of the language model as the objective function to **maximize**. It uses the whole Alpaca dataset. Possible values and encodings for each HP are as follows:
 
 | HP | Possible values | NOMAD type | NOMAD encoding
 |---|---|---|---|
