@@ -65,21 +65,48 @@ The pipeline is usually broken down into 2 files:
     * runs the following command in order to perform training and validation with the appropriate HPs. Elements that should be adapted to your local setup or customized are between braces `<the element>`.
 
 ```bash
-source <path to your Python virtual environment>; export HF_HOME=<path to your local HuggingFace hub folder>; export WANDB_MODE=offline; 
-CUDA_VISIBLE_DEVICES=<list of GPUs IDs to be used> torchrun -r 2 --log_dir <path to the directory where PyTorch writes log files> --proc_per_node <amount of used GPUs> train/train_with_LoRa_mixed_data.py --model_name_or_path <name of your LLM on the HF hub> --data_path_train <path to the file containing your training data> --do_eval <True | False to perform evaluation> --data_path_eval <path to the file containing your evaluation data> --bf16 True --output_dir <path to the folder where the fine-tuned models will be stored> --num_train_epochs <number of training epochs> --per_device_train_batch_size <your training batch size> --per_device_eval_batch_size <your evaluation batch size> --gradient_accumulation_steps 8 --evaluation_strategy "epoch" --save_strategy "steps" --save_steps 2000 --save_total_limit 1 --learning_rate <value given by NOMAD> --weight_decay 0. --warmup_ratio 0.03 --lr_scheduler_type "cosine" --logging_steps 1 --tf32 True --lora_rank <rank value given by NOMAD> --lora_dropout <dropout value given by NOMAD> --lora_alpha <alpha value given by NOMAD>; deactivate
+source <venv_path>; export HF_HOME=<hf_path>; export WANDB_MODE=offline; 
+CUDA_VISIBLE_DEVICES=<gpus> torchrun -r 2
+--log_dir <log_path> --proc_per_node <nb_gpus> train/train_with_LoRa_mixed_data.py --model_name_or_path <pt_model> --data_path_train <training_data> --do_eval <eval> --data_path_eval <eval_data> --bf16 True --output_dir <checkpoints_path> --num_train_epochs <epochs> --per_device_train_batch_size <training_batch_size> --per_device_eval_batch_size <eval_batch_size> --gradient_accumulation_steps 8 --evaluation_strategy <eval_strategy> --save_strategy "steps" --save_steps 2000 --save_total_limit 1 --learning_rate <lr> --weight_decay 0. --warmup_ratio 0.03 --lr_scheduler_type "cosine" --logging_steps 1 --tf32 True --lora_rank <rank> --lora_dropout <dropout> --lora_alpha <alpha>; deactivate
 ```
 
-this command line will 
+this command line will:
+* load the Python virtual environment in `venv_path` (should point to the `activate` file);
+* indicate to the HuggingFace library where the language models have been downloaded (`hf_path`);
+* run the fine-tuning as follows, by relying on the `train//train_with_LoRa_mixed_data.py` script:
+    * use the GPUs listed in `gpus` (following the format: `0,1,2,3` for instance). `nb_gpus` should equal the amount of these GPUs;
+    * use the pretrained model denoted in `pt_model` (use the name as displayed on the HuggingFace Hub);
+    * all hyperparameter values are given here: `rank`, `alpha`, `dropout`, `lr`;
+    * use the training data given in `training_data`;
+    * use `epochs` training epochs with a batch size of `training_batch_size`;
+    * if `eval` is set to `True`:
+        * perform evaluation of the model on the dataset given in `eval_data` with a batch size of `eval_batch_size`;
+        * the evaluation will be performed periodically depending on the value of `eval_strategy` (`"step"` at every training step (highly useless to perform it so often), `"epoch"` at every training epoch);
+* the outputs will be stored as follows:
+    * the logs from PyTorch will be saved in `log_path`;
+    * the LoRA weights output from the training (checkpoints) will be saved in `checkpoints_path`.
+
+Feel free to change some parameters as you wish.
+
+## NOMAD
+
+Giving `$python3 bb.py` as the blackbox to NOMAD will suffice to run this pipeline. As NOMAD does not handle natively some of the types we used to define the possible values for each HP, we encoded them and translated them in the Python script. Each encoding will be described in the appropriate section below.
 
 ## Already run experiments
 
 Each experiment sets a specific objective function and uses specific sets of values for each variable.
 
-<a id="exp1">### Experiment 1</a>
-This experiment tries to solve
-```math
-    \max\limits_{\theta\in\Theta}\quad\text{MMLU}(\text{LoRA}(\text{LLaMA-2-7B},\mathcal{D},\theta))\enspace.
-```
+### Experiment 1
+<a id="exp1"></a>
+This experiment uses the *MMLU score* of the language model as the objective function to *maximize*. It uses the whole Alpaca dataset. Possible values and encodings for each HP are as follows:
+
+| HP | Possible values | NOMAD type | NOMAD encoding
+|---|---|---|---|
+|$`r`$|$`\{4,8,16,32,64,128\}`$|int|$`\{1,2,3,4,5,6\}`$|
+|dropout|$`\{0,10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}, 1\}`$|int|$`\{1,2,3,4,5,6\}`$|
+|$`\alpha`$|$`[\![1,64]\!]`$|int|no need to encode|
+|learning rate|$`[10^{-6}, 10^{-3}]`$|float|$`\log_{10}(lr)`$, so that NOMAD can choose values in $`[-6,-3]`$|
+
 
 <a id="exp2">### Experiment 2</a>
 This experiment tries to solve
