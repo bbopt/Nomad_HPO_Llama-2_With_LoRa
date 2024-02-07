@@ -108,8 +108,8 @@ Each experiment sets a specific objective function and uses specific sets of val
 <a id="exp1"></a>
 This experiment uses the **MMLU score** of the language model as the objective function to **maximize**. It uses the whole Alpaca dataset. Possible and initial values as well as encodings for each HP are as follows:
 
-| HP | Possible values | Initial value | NOMAD type | NOMAD encoding
-|---|---|---|---|
+| HP | Possible values | Initial value | NOMAD type | NOMAD encoding |
+|---|---|---|---|---|
 |$`r`$|$`\{4,8,16,32,64,128\}`$|$`8`$|int|$`\{1,2,3,4,5,6\}`$|
 |dropout|$`\{0,10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}, 1\}`$|$`10^{-1}`$|int|$`\{1,2,3,4,5,6\}`$|
 |$`\alpha`$|$`[\![1,64]\!]`$|int|$`32`$|no need to encode|
@@ -127,8 +127,8 @@ An experiment 2b has been run and is referred to as experiment 2 in the paper. I
 <a id="exp3"></a>
 The objective function is similar to that of experiment 2. Training and validation are performed on the same datasets. This experiment was run after the publication of the paper, in order to see how NOMAD behaves when constrained to low ranks. Also, it has been noticed that the oRA paper mentions that $`\alpha`$ should be "a constant in $`r`$. Thus, possible (and initial) values have changed.
 
-| HP | Possible values | Initial value | NOMAD type | NOMAD encoding
-|---|---|---|---|
+| HP | Possible values | Initial value | NOMAD type | NOMAD encoding |
+|---|---|---|---|---|
 |$`r`$|$`\{4,8,16,32,64\}`$|$`8`$|int|$`\{1,2,3,4,5,6\}`$|
 |dropout|$`\{0,10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}, 1\}`$|$`0`$|int|$`\{1,2,3,4,5,6\}`$|
 |$`\alpha`$|$`[\![1,64]\!]\times r`$|int|$`8\times r`$|no need to encode|
