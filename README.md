@@ -106,43 +106,51 @@ Each experiment sets a specific objective function and uses specific sets of val
 
 ### Experiment 1
 <a id="exp1"></a>
-This experiment uses the **MMLU score** of the language model as the objective function to **maximize**. It uses the whole Alpaca dataset. Possible values and encodings for each HP are as follows:
+This experiment uses the **MMLU score** of the language model as the objective function to **maximize**. It uses the whole Alpaca dataset. Possible and initial values as well as encodings for each HP are as follows:
 
-| HP | Possible values | NOMAD type | NOMAD encoding
+| HP | Possible values | Initial value | NOMAD type | NOMAD encoding
 |---|---|---|---|
-|$`r`$|$`\{4,8,16,32,64,128\}`$|int|$`\{1,2,3,4,5,6\}`$|
-|dropout|$`\{0,10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}, 1\}`$|int|$`\{1,2,3,4,5,6\}`$|
-|$`\alpha`$|$`[\![1,64]\!]`$|int|no need to encode|
-|learning rate|$`[10^{-6}, 10^{-3}]`$|float|$`\log_{10}(lr)`$, so that NOMAD can choose values in $`[-6,-3]`$|
+|$`r`$|$`\{4,8,16,32,64,128\}`$|$`8`$|int|$`\{1,2,3,4,5,6\}`$|
+|dropout|$`\{0,10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}, 1\}`$|$`10^{-1}`$|int|$`\{1,2,3,4,5,6\}`$|
+|$`\alpha`$|$`[\![1,64]\!]`$|int|$`32`$|no need to encode|
+|learning rate|$`[10^{-6}, 10^{-3}]`$|float|$`10^{-5}`$|$`\log_{10}(lr)`$, so that NOMAD can choose values in $`[-6,-3]`$|
 
+It runs on 3 training epochs for every of the 50 blackbox evaluations.
 
-<a id="exp2">### Experiment 2</a>
-This experiment tries to solve
-```math
-    \min_{\theta\in\Theta}\quad\mathcal{L}\left(\text{LoRA}(\text{LLaMA-2-7B},\theta),\mathcal{D}_{\text{valid}}\right)\enspace.
-```
+### Experiment 2
+<a id="exp2"></a>
+This experiment uses the **loss** of the model on the validation dataset as the objective function to **minimize**. It uses the training and validation datasets in `data`. Possible and default values, as well as encodings, are similar to experiment 1.
+
+An experiment 2b has been run and is referred to as experiment 2 in the paper. It extends possible rank values to $`\{4,8,16,32,64,128,256,512\}`$, lowers training epochs to 2 and allows 100 blackbox evaluations for NOMAD.
+
+### Experiment 3
+<a id="exp3"></a>
+The objective function is similar to that of experiment 2. Training and validation are performed on the same datasets. This experiment was run after the publication of the paper, in order to see how NOMAD behaves when constrained to low ranks. Also, it has been noticed that the oRA paper mentions that $`\alpha`$ should be "a constant in $`r`$. Thus, possible (and initial) values have changed.
+
+| HP | Possible values | Initial value | NOMAD type | NOMAD encoding
+|---|---|---|---|
+|$`r`$|$`\{4,8,16,32,64\}`$|$`8`$|int|$`\{1,2,3,4,5,6\}`$|
+|dropout|$`\{0,10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}, 1\}`$|$`0`$|int|$`\{1,2,3,4,5,6\}`$|
+|$`\alpha`$|$`[\![1,64]\!]\times r`$|int|$`8\times r`$|no need to encode|
+|learning rate|$`[10^{-4}, 10^{-3}]`$|float|$`10^{-3.5}`$|$`\log_{10}(lr)`$, so that NOMAD can choose values in $`[-4,-3]`$|
+
+## Possible directions for further experiments
+
+* Work on the learning rate and the number of epochs. It has been observed that low learning rates with 3 training epochs leads to failed training and thus poor performance. One could either
+    * keep 2-3 epochs for a reasonable computing time and seek to refine the bounds on the learning rate,
+    * or add the number of training epochs as a variable and let NOMAD optimize.
+* Rethink generalization to downstream tasks. It was initially hoped that fine-tuning on our 54k-sized training set would yield good performance on downstream tasks because the literature says that generalization is often observed. This did not happen. Several directions:
+    * give up on universality of the model. Focus on a specific family of tasks and use appropriate data. Or keep aiming at universality, but more diverse data is needed.
+    * choose a more appropriate objective function than the validation loss.
+        * compute model score on a subset of the datasets of MMLU, BBH, DROP and HumanEval (for instance) and use this score as the objective function. Keep the rest of the datasets for the test,
+        * see the implementation of MMLU, BBH, DROP and HumanEval tests in [InstructEval](https://github.com/declare-lab/instruct-eval),
+        * review the literature on evaluating large language models to increase the number of metrics we use, and then maybe fully use MMLU or another test as the objective function to maximize, but test on other benchmarks.
 
 ## Contact
 
 For any questions about the theory or the code presented in this repo, you may contact:
 * sacha.benarroch-lelong@zaclys.net
 * christophe.tribes@polymtl.ca
-
-# Description of the experiments
-
-## BBO3
-
-### Parameters
-* Rank: choice in [4,8,16,32]
-* Alpha: integer proportional to the rank in [rank, 64 * rank]
-* Dropout: choice in [0, 0.0001, 0.001, 0.01, 0.1]
-* Learning rate: fixed to 10e-3.5
-
-### Initial point
-
-* Rank: 8
-* Alpha: 8
-* Dropout: 0
 
 ## References
 <a id="Vas17">[Vas+17]</a> A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A.N. Gomez, L. Kaiser, & I. Polosukhin (2017). Attention is All You Need. In *Proceedings of the 31st International Conference on Neural Information Processing Systems* (pp. 6000–6010). Curran Associates Inc..
