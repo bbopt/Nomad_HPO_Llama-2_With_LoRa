@@ -6,7 +6,7 @@ This repo gathers the work that has been done by the BBO team @ GERAD for the Hy
 
 ## Get started
 
-The PDF document `approach.pdf` in the `Docs` folder thoroughly describes the theory behind our work, as well as our approach. It is recommended to read it first in order to fully understand what is undertaken here.
+The PDF document `approach.pdf` in the `docs` folder thoroughly describes the theory behind our work, as well as our approach. It is recommended to read it first in order to fully understand what is undertaken here.
 
 In the following, the reader is assumed to be familiar with the theory developed in this document, especially with: the Transformers architecture [[Vas+17]](#Vas17), the concept of instruction-tuning, the LoRA fine-tuning method [[Hu+21]](#Hu21), 4 widespread NLP tests (MMLU, BBH, DROP and HumanEval) and the family of LLaMA language models. [[Touv+23]](#Touv23)
 
@@ -18,7 +18,7 @@ We perform the fine-tuning of the 7B parameter variant of LLaMA 2 on a 53k-sized
 \forall x\in\mathbb{R}^d,\quad W_0x+\Delta Wx\simeq W_0x+\frac{\alpha}{r}BAx\enspace.
 ```
 
-with $`B\in\mathbb{R}^{k\times r}, A\in\mathbb{R}^{r\times d}`$ and $`\alpha\in\mathbb{N}`$.
+with $`B\in\mathbb{R}^{k\times r}, A\in\mathbb{R}^{r\times d}, r\ll\min(k,d)`$ and $`\alpha\in\mathbb{N}`$.
 
 We seek to optimize the choice of 4 hyperparameters (HPs) within this context: $`r`$, $`\alpha`$, the dropout probability of the optimizer AdamW and the learning rate of the fine-tuning. Each combination is denoted as a vector of hyperparameters $`\theta=(r,\alpha,dropout,lr)^ \top`$.
 
@@ -129,10 +129,10 @@ The objective function is similar to that of experiment 2. Training and validati
 
 | HP | Possible values | Initial value | NOMAD type | NOMAD encoding |
 |---|---|---|---|---|
-|$`r`$|$`\{4,8,16,32,64\}`$|$`8`$|int|$`\{1,2,3,4,5,6\}`$|
+|$`r`$|$`\{4,8,16,32,64\}`$|$`8`$|int|$`\{1,2,3,4,5\}`$|
 |dropout|$`\{0,10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}, 1\}`$|$`0`$|int|$`\{1,2,3,4,5,6\}`$|
-|$`\alpha`$|$`[\![1,64]\!]\times r`$|int|$`8\times r`$|no need to encode|
-|learning rate|$`[10^{-4}, 10^{-3}]`$|float|$`10^{-3.5}`$|$`\log_{10}(lr)`$, so that NOMAD can choose values in $`[-4,-3]`$|
+|$`\alpha`$|$`[\![1,64]\!]\times r`$|$`8\times r`$|int|no need to encode|
+|learning rate|$`[10^{-4}, 10^{-3}]`$|$`10^{-3.5}`$|float|$`\log_{10}(lr)`$, so that NOMAD can choose values in $`[-4,-3]`$|
 
 ## Possible directions for further experiments
 
