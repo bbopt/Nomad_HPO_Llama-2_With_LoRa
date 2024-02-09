@@ -112,8 +112,8 @@ This experiment uses the **MMLU score** of the language model as the objective f
 |---|---|---|---|---|
 |$`r`$|$`\{4,8,16,32,64,128\}`$|$`8`$|int|$`\{1,2,3,4,5,6\}`$|
 |dropout|$`\{0,10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}, 1\}`$|$`10^{-1}`$|int|$`\{1,2,3,4,5,6\}`$|
-|$`\alpha`$|$`[\![1,64]\!]`$|int|$`32`$|no need to encode|
-|learning rate|$`[10^{-6}, 10^{-3}]`$|float|$`10^{-5}`$|$`\log_{10}(lr)`$, so that NOMAD can choose values in $`[-6,-3]`$|
+|$`\alpha`$|$`[\![1,64]\!]`$|$`32`$|int|no need to encode|
+|learning rate|$`[10^{-6}, 10^{-3}]`$|$`10^{-5}`$|float|$`\log_{10}(lr)`$, so that NOMAD can choose values in $`[-6,-3]`$|
 
 It runs on 3 training epochs for every of the 50 blackbox evaluations.
 
